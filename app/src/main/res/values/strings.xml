@@ -1,11 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">Animetake</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_all_animes">All Animes</string>
+    <string name="title_recently_watched">Recently Watched</string>
     <string name="title_notifications">Notifications</string>
 
     <string name="title_activity_episode">EpisodeActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="menu_search">Search</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_favorite">Add favorite</string>
+    <string name="menu_favorited">Remove favorite</string>
+
+    <string name="progress_title">Please wait</string>
+    <string name="progress_text_episode_list">Downloading episode list</string>
+    <string name="progress_text_anime_list">Downloading anime repository</string>
 </resources>

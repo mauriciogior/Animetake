@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import tv.animetake.app.model.Anime;
 import tv.animetake.app.model.Episode;
+import tv.animetake.app.model.Historic;
 
 /**
  * Created by mauricio on 02/08/17.
@@ -13,7 +14,7 @@ import tv.animetake.app.model.Episode;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "Animetake";
@@ -35,18 +36,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(Anime.createQuery());
         sqLiteDatabase.execSQL(Episode.createQuery());
+        sqLiteDatabase.execSQL(Historic.createQuery());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            sqLiteDatabase.execSQL(Anime.dropQuery());
-            sqLiteDatabase.execSQL(Anime.createQuery());
-        }
-
-        if (oldVersion < 4) {
-            sqLiteDatabase.execSQL(Episode.dropQuery());
-            sqLiteDatabase.execSQL(Episode.createQuery());
-        }
+        // TODO
     }
 }

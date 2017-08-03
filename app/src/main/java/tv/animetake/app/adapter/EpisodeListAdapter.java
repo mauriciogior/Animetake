@@ -1,5 +1,6 @@
 package tv.animetake.app.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,16 @@ public class EpisodeListAdapter extends RecyclerView.Adapter<EpisodeListAdapter.
 
         holder.position = position;
         holder.title.setText(episode.getTitle());
+
+        if (episode.getWatched() == 1) {
+            holder.title.setTextColor(
+                holder.getContext().getResources().getColor(R.color.anime_item_text_color_medium)
+            );
+        } else {
+            holder.title.setTextColor(
+                holder.getContext().getResources().getColor(R.color.anime_item_text_color_light)
+            );
+        }
     }
 
     @Override
@@ -53,10 +64,12 @@ public class EpisodeListAdapter extends RecyclerView.Adapter<EpisodeListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView title;
         public int position;
+        public View view;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            view = itemView;
             title = (TextView) itemView.findViewById(R.id.title);
 
             itemView.setOnClickListener(this);
@@ -67,6 +80,10 @@ public class EpisodeListAdapter extends RecyclerView.Adapter<EpisodeListAdapter.
             if (onClickListener != null) {
                 onClickListener.onClick(dataList.get(position));
             }
+        }
+
+        public Context getContext() {
+            return view.getContext();
         }
     }
 

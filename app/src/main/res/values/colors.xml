@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#9b59b6</color>
+    <color name="colorPrimaryDark">#8e44ad</color>
+    <color name="colorAccent">#3498db</color>
 
+    <color name="background">#2c3e50</color>
+    <color name="background_light">#34495e</color>
+    <color name="anime_item_background">#f5f5f5</color>
+    <color name="anime_item_text_color">#222222</color>
+    <color name="anime_item_text_color_light">#f5f5f5</color>
+    <color name="anime_item_text_color_medium">#aaaaaa</color>
+    <color name="anime_item_selector">#dddddd</color>
     <color name="black_overlay">#66000000</color>
 </resources>

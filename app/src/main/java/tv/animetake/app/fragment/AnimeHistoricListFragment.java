@@ -1,6 +1,5 @@
 package tv.animetake.app.fragment;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,19 +18,20 @@ import android.widget.SearchView;
 
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.animetake.app.AnimeActivity;
 import tv.animetake.app.R;
 import tv.animetake.app.adapter.AnimeListGridAdapter;
-import tv.animetake.app.helper.Updater;
 import tv.animetake.app.model.Anime;
+import tv.animetake.app.model.Historic;
 
 /**
- * Created by mauricio on 02/08/17.
+ * Created by mauricio on 03/08/17.
  */
 
-public class AnimeListFragment extends Fragment {
+public class AnimeHistoricListFragment extends Fragment {
 
     private AnimeListGridAdapter adapter;
 
@@ -67,7 +67,7 @@ public class AnimeListFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
         adapter = new AnimeListGridAdapter();
-        List<Anime> animeList = Anime.getAll(getActivity());
+        List<Anime> animeList = Historic.getAll(getActivity());
         adapter.setDataList(animeList);
 
         recyclerView.setAdapter(adapter);
@@ -81,51 +81,13 @@ public class AnimeListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        if (animeList.size() == 0) {
-            updateAnimeList();
-        }
-    }
-
-    private void updateAnimeList() {
-        final Updater updater = new Updater(getActivity());
-        final ProgressDialog progressDialog;
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle(R.string.progress_title);
-        progressDialog.setMessage(getString(R.string.progress_text_anime_list));
-        progressDialog.setIndeterminate(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-
-        updater.updateAnimeList(new Updater.OnProgress() {
-            @Override
-            public void progress(final int amount, final int total) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (amount == total) {
-                            progressDialog.dismiss();
-
-                            List<Anime> animeList = Anime.getAll(getActivity());
-                            adapter.setDataList(animeList);
-                            updater.release();
-                        } else {
-                            float progress = ((float) amount / (float) total) * 100;
-                            progressDialog.setProgress((int) progress);
-                        }
-                    }
-                });
-            }
-        });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.anime_list_grid, menu);
+        inflater.inflate(R.menu.anime_historic_list_grid, menu);
 
         SearchView searchView = new SearchView(getActivity());
         menu.findItem(R.id.action_search).setActionView(searchView);
@@ -136,7 +98,7 @@ public class AnimeListFragment extends Fragment {
                 searchManager.getSearchableInfo(getActivity().getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            List<Anime> animeListAll = Anime.getAll(getActivity());
+            List<Anime> animeListAll = Historic.getAll(getActivity());
 
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -148,7 +110,12 @@ public class AnimeListFragment extends Fragment {
                 if (newText.isEmpty()) {
                     adapter.setDataList(animeListAll);
                 } else {
-                    List<Anime> animeList = Anime.searchLike(getActivity(), "%" + newText + "%");
+                    List<Anime> animeList = new ArrayList<Anime>();
+                    for (Anime anime : animeListAll) {
+                        if (anime.getTitle().contains(newText)) {
+                            animeList.add(anime);
+                        }
+                    }
                     adapter.setDataList(animeList);
                 }
                 return false;
@@ -163,8 +130,6 @@ public class AnimeListFragment extends Fragment {
             searchView.setIconified(false);
             return true;
 
-        } else if (item.getItemId() == R.id.action_refresh) {
-            updateAnimeList();
         }
 
         return super.onOptionsItemSelected(item);

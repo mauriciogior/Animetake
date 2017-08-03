@@ -25,20 +25,22 @@ public class Episode extends Base implements Parcelable {
     public static final String KEY_TITLE = "title";
     public static final String KEY_URL = "url";
     public static final String KEY_VIDEO_URL = "videoUrl";
+    public static final String KEY_WATCHED = "watched";
 
-    public static final String[] COLUMNS = {KEY_ID,KEY_ANIME_ID,KEY_TITLE, KEY_URL, KEY_VIDEO_URL};
+    public static final String[] COLUMNS = {KEY_ID,KEY_ANIME_ID,KEY_TITLE, KEY_URL, KEY_VIDEO_URL, KEY_WATCHED};
 
     private int id;
     private int animeId;
     private String title;
     private String url;
     private String videoUrl;
+    private int watched;
 
     public Episode() {
     }
 
     public Episode(Parcel in){
-        String[] data = new String[5];
+        String[] data = new String[6];
         in.readStringArray(data);
 
         this.id       = Integer.parseInt(data[0]);
@@ -46,6 +48,7 @@ public class Episode extends Base implements Parcelable {
         this.title    = data[2];
         this.url      = data[3];
         this.videoUrl = data[4];
+        this.watched  = Integer.parseInt(data[5]);
     }
 
     public Episode(int id, int animeId, String title, String url, String videoUrl) {
@@ -54,6 +57,7 @@ public class Episode extends Base implements Parcelable {
         this.title = title;
         this.url = url;
         this.videoUrl = videoUrl;
+        this.watched = 0;
     }
 
     public int getId() {
@@ -96,6 +100,14 @@ public class Episode extends Base implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
+    public int getWatched() {
+        return watched;
+    }
+
+    public void setWatched(int watched) {
+        this.watched = watched;
+    }
+
     @Override
     public String toString() {
         return "Episode [id=" + id + ", title=" + title + "]";
@@ -108,7 +120,8 @@ public class Episode extends Base implements Parcelable {
                 "animeId INTEGER, " +
                 "title TEXT, " +
                 "url TEXT, " +
-                "videoUrl TEXT)";
+                "videoUrl TEXT, " +
+                "watched INTEGER)";
     }
 
     @Override
@@ -127,12 +140,21 @@ public class Episode extends Base implements Parcelable {
     public void saveEpisode(Context context) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        List<Episode> episodeList = searchEq(context, getAnimeId(), getTitle());
 
-        if (episodeList.size() > 0) {
+        if (getId() == 0) {
+            List<Episode> episodeList = searchEq(context, getAnimeId(), getTitle());
+            if (episodeList.size() > 0) {
+                setId(episodeList.get(0).getId());
+
+                if (watched != 1) {
+                    setWatched(episodeList.get(0).getWatched());
+                }
+            }
+        }
+
+        if (getId() != 0) {
             // Update anime
-            Log.d("Episode", "Update " + getTitle());
-            setId(episodeList.get(0).getId());
+            Log.d("Episode", "Update " + getId());
             update(db);
         } else {
             // Insert to db
@@ -182,6 +204,7 @@ public class Episode extends Base implements Parcelable {
                 episode.setTitle(cursor.getString(2));
                 episode.setUrl(cursor.getString(3));
                 episode.setVideoUrl(cursor.getString(4));
+                episode.setWatched(Integer.parseInt(cursor.getString(5)));
 
                 episodeList.add(episode);
             }
@@ -196,6 +219,7 @@ public class Episode extends Base implements Parcelable {
         values.put("title", title);
         values.put("url", url);
         values.put("videoUrl", videoUrl);
+        values.put("watched", watched);
 
         // Insert
         db.insert(TABLE_NAME, null, values);
@@ -207,6 +231,7 @@ public class Episode extends Base implements Parcelable {
         values.put("title", title);
         values.put("url", url);
         values.put("videoUrl", videoUrl);
+        values.put("watched", watched);
 
         db.update(TABLE_NAME, //table
             values, // column/value
@@ -226,7 +251,7 @@ public class Episode extends Base implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[] {
-                String.valueOf(id), String.valueOf(animeId), title, url, videoUrl
+                String.valueOf(id), String.valueOf(animeId), title, url, videoUrl, String.valueOf(watched)
         });
     }
 

@@ -23,3 +23,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file title.
 #-renamesourcefileattribute SourceFile
+-keep class android.support.** { *; }
+-keep interface android.support.** { *; }

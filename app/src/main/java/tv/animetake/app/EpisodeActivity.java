@@ -4,12 +4,16 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.afollestad.easyvideoplayer.EasyVideoCallback;
 import com.afollestad.easyvideoplayer.EasyVideoPlayer;
 
+import java.util.Date;
+
 import tv.animetake.app.helper.Updater;
 import tv.animetake.app.model.Episode;
+import tv.animetake.app.model.Historic;
 
 public class EpisodeActivity extends AppCompatActivity implements EasyVideoCallback {
 
@@ -54,6 +58,11 @@ public class EpisodeActivity extends AppCompatActivity implements EasyVideoCallb
             loadVideo();
         }
 
+        episode.setWatched(1);
+        episode.saveEpisode(this);
+
+        Historic historic = new Historic(0, episode.getAnimeId(), (int) (new Date().getTime()) / 1000);
+        historic.saveHistoric(this);
     }
 
     private void loadVideo() {
@@ -132,5 +141,15 @@ public class EpisodeActivity extends AppCompatActivity implements EasyVideoCallb
     @Override
     public void onSubmit(EasyVideoPlayer player, Uri source) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

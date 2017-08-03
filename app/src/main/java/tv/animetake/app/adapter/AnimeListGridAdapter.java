@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -21,7 +22,8 @@ import tv.animetake.app.model.Anime;
  * Created by mauricio on 02/08/17.
  */
 
-public class AnimeListGridAdapter extends RecyclerView.Adapter<AnimeListGridAdapter.ViewHolder>  {
+public class AnimeListGridAdapter extends RecyclerView.Adapter<AnimeListGridAdapter.ViewHolder>
+    implements SectionTitleProvider  {
 
     private OnClickListener onClickListener;
     private List<Anime> dataList = new ArrayList<>();
@@ -72,6 +74,11 @@ public class AnimeListGridAdapter extends RecyclerView.Adapter<AnimeListGridAdap
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return dataList.get(position).getTitle().substring(0, 1);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
